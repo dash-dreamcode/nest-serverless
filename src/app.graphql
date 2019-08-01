@@ -1,0 +1,102 @@
+type Tuple {
+  key: String!
+  value: String!
+}
+
+type FeatureToggle {
+  feature: String!
+  isEnabled: Boolean!
+}
+
+
+type I18NConfiguration{
+  language: String!
+  default: Boolean
+  translation: [Tuple]!
+  
+}
+
+type UISettings {
+  logoBase64: String!
+  themeVariables: [Tuple]
+}
+
+type Contact {
+  id: ID
+  name: String
+  phone: String
+  email: String
+  title: String
+  avatarBase64: String
+
+}
+
+input SavePortalInput{
+  id: ID #Create if it's not sent
+  uiSettings: UISettings
+  i18nSettings: [I18NConfiguration]
+  featureToggles: [FeatureToggle]
+  visitorEmails: [String]
+  termsOfService: [String] #Basic Markdown
+  footer: [String] #Basic Markdown
+  accountExecutives: [Contact]! #Sales Rep team
+  alias: String
+}
+
+type PortalSettings{
+  id: ID!
+  uiSettings: UISettings
+  i18nSettings: [I18NConfiguration]
+  featureToggles: [FeatureToggle]
+  visitorEmails: [String]
+  termsOfService: [String] #Basic Markdown
+  footer: [String] #Basic Markdown
+  accountExecutives: [Contact]! #Sales Rep team
+  alias: String
+}
+
+enum ContentTypeEnum {
+  VIDEO
+  PDF
+  RECOMMENDED_QUESTION
+  SECTION
+  JOURNEY
+}
+
+type Content {
+  id:ID!
+  type: ContentTypeEnum!
+  title: String
+  coverUrl: String
+  url: String
+  isRecommended: Boolean
+  isNew: Boolean
+  isSeen: Boolean
+  params: [Tuple]
+}
+
+type ContentSearch {
+  type: ContentTypeEnum
+  portalId: ID
+}
+
+type Topic {
+  id: ID!
+  phrase: String!
+  isRecommended: Boolean
+}
+
+type Mutation {
+  savePortal(portal: SavePortalInput): PortalSettings
+}
+
+type TopicsSearch {
+  portalId: ID
+  digitalAssetIds: [ID]!
+}
+
+type Query {
+  getPortalSettings(portalId: ID!): PortalSettings
+  getTopics(search: TopicsSearch, first: Int, after: String): [Topics]
+  getContent(search: ContentSearch, first: Int, after: String ): [Content]
+}
